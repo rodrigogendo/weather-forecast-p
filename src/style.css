@@ -55,35 +55,33 @@
   .search-form:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
   .search-form button { padding: 11px 20px; border: 0; border-radius: 5px; color: #fff; background: var(--ink); font-size: 13px; font-weight: 700; transition: background .2s ease; }
   .search-form button:hover { background: var(--accent); }
-  .dashboard { display: grid; grid-template-columns: minmax(230px, .72fr) minmax(0, 2fr); gap: 18px; align-items: stretch; }
+  .dashboard { display: grid; grid-template-columns: minmax(230px, .72fr) minmax(0, 2fr); gap: 18px; align-items: start; }
   .panel { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
-  .summary-panel { display: flex; min-height: 470px; flex-direction: column; padding: 24px; background: #eef1ed; }
+  .summary-panel { display: flex; min-height: 330px; flex-direction: column; padding: 24px; background: #eef1ed; }
   .panel-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
   .location-dot { width: 8px; height: 8px; margin-top: 4px; border-radius: 50%; background: var(--accent); }
-  .summary-empty { display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .summary-empty { display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; }
   .weather-symbol { color: var(--accent); font-size: 64px; line-height: 1; }
   .temperature-placeholder { margin: 18px 0 8px; font-family: Georgia, serif; font-size: 58px; letter-spacing: -.06em; }
   .empty-title { margin-bottom: 5px; font-size: 16px; font-weight: 700; }
   .current-day { margin: 0 0 5px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
   .empty-copy { max-width: 190px; margin-bottom: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
-  .summary-footer { display: flex; justify-content: space-between; padding-top: 18px; border-top: 1px solid #d7ded9; color: var(--muted); font-size: 12px; }
-  .summary-footer strong { color: var(--ink); font-weight: 500; }
-  .forecast-area { display: grid; grid-template-rows: minmax(220px, 1fr) minmax(220px, 1fr); gap: 18px; }
-  .forecast-panel { min-width: 0; padding: 24px; }
-  .empty-forecast, .daily-empty { display: flex; min-height: 146px; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); text-align: center; }
+  .forecast-stack { display: grid; grid-template-rows: minmax(180px, auto) minmax(180px, auto); gap: 14px; }
+  .forecast-panel { min-width: 0; padding: 20px 24px 16px; }
+  .empty-forecast, .daily-empty { display: flex; min-height: 110px; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); text-align: center; }
   .empty-forecast p, .daily-empty p { margin: 14px 0 0; font-size: 13px; }
   .empty-line { width: 75%; height: 1px; background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 10px); }
   .calendar-mark { color: var(--faint); font-size: 36px; line-height: 1; }
-  .hourly-content { display: flex; gap: 10px; min-height: 146px; padding: 24px 0 6px; overflow-x: auto; scrollbar-color: var(--accent) transparent; }
-  .hourly-item { display: flex; width: 126px; min-width: 126px; min-height: 138px; flex-direction: column; gap: 8px; padding: 14px 12px; border: 1px solid var(--line); border-radius: 7px; background: #fbfcfa; }
+  .hourly-content { display: flex; gap: 10px; min-height: 138px; padding: 12px 0 2px; overflow-x: auto; scrollbar-color: var(--accent) transparent; }
+  .hourly-item { display: flex; width: 126px; min-width: 126px; min-height: 120px; flex-direction: column; gap: 7px; padding: 12px 10px; border: 1px solid var(--line); border-radius: 7px; background: #fbfcfa; }
   .forecast-time, .forecast-precipitation { color: var(--muted); font-size: 11px; }
   .forecast-time { font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
   .forecast-condition { display: flex; min-height: 32px; align-items: center; gap: 6px; color: var(--ink); font-size: 12px; line-height: 1.35; }
   .forecast-icon { flex: 0 0 auto; color: var(--accent); font-size: 19px; line-height: 1; }
   .forecast-temperature { margin-top: auto; font-family: Georgia, serif; font-size: 25px; font-weight: 400; }
   .forecast-precipitation { color: var(--accent); }
-  .daily-content { padding-top: 24px; }
-  .daily-item { display: grid; grid-template-columns: 72px minmax(100px, 1.4fr) repeat(4, minmax(52px, .7fr)); gap: 14px; align-items: center; padding: 14px 0; border-top: 1px solid var(--line); font-size: 13px; }
+  .daily-content { padding-top: 14px; }
+  .daily-item { display: grid; grid-template-columns: 72px minmax(100px, 1.4fr) repeat(4, minmax(52px, .7fr)); gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); font-size: 13px; }
   .daily-item small { display: block; margin-bottom: 4px; color: var(--muted); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
   .daily-day { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
   .daily-condition { display: flex; align-items: center; gap: 6px; color: var(--muted); }
@@ -97,10 +95,10 @@
     .search-form { min-height: 54px; }
     .search-form button { padding-inline: 14px; }
     .dashboard { grid-template-columns: 1fr; }
-    .summary-panel { min-height: 380px; }
-    .forecast-area { grid-template-rows: auto auto; }
+    .summary-panel { min-height: 260px; }
+    .forecast-stack { grid-template-rows: auto auto; }
     .forecast-panel { min-height: 230px; }
     .daily-content { overflow-x: auto; }
     .daily-item { min-width: 555px; grid-template-columns: 58px minmax(90px, 1fr) repeat(4, minmax(52px, .7fr)); gap: 9px; font-size: 12px; }
   }
-  border-radius: 4px;
+}

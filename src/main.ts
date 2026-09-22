@@ -42,13 +42,9 @@ appRoot.innerHTML = `
         <p class="current-day">--</p>
         <p class="empty-copy">Search for a city to see current conditions.</p>
       </div>
-      <div class="summary-footer">
-        <span>Temperature</span>
-        <strong>--</strong>
-      </div>
     </aside>
 
-    <div class="forecast-area">
+    <div class="forecast-stack">
       <section class="forecast-panel panel" aria-labelledby="hourly-heading">
         <div class="panel-heading">
           <div>
@@ -88,12 +84,11 @@ const weatherSymbol = document.querySelector<HTMLElement>('.weather-symbol')
 const temperaturePlaceholder = document.querySelector<HTMLElement>('.temperature-placeholder')
 const emptyTitle = document.querySelector<HTMLElement>('.empty-title')
 const emptyCopy = document.querySelector<HTMLElement>('.empty-copy')
-const summaryFooterValue = document.querySelector<HTMLElement>('.summary-footer strong')
 const hourlyContent = document.querySelector<HTMLElement>('#hourly-content')
 const dailyContent = document.querySelector<HTMLElement>('#daily-content')
 
 const currentDay = document.querySelector<HTMLElement>('.current-day')
-if (!form || !searchInput || !submitButton || !weatherSymbol || !temperaturePlaceholder || !emptyTitle || !currentDay || !emptyCopy || !summaryFooterValue || !hourlyContent || !dailyContent) {
+if (!form || !searchInput || !submitButton || !weatherSymbol || !temperaturePlaceholder || !emptyTitle || !currentDay || !emptyCopy || !hourlyContent || !dailyContent) {
   throw new Error('Required dashboard elements were not found.')
 }
 
@@ -182,7 +177,6 @@ const renderIdleState = (): void => {
   emptyTitle.textContent = 'No location selected'
   currentDay.textContent = '--'
   emptyCopy.textContent = 'Search for a city to see current conditions.'
-  summaryFooterValue.textContent = '--'
   hourlyContent.className = 'empty-forecast'
   dailyContent.className = 'daily-empty'
   hourlyContent.innerHTML = `
@@ -196,12 +190,12 @@ const renderIdleState = (): void => {
 }
 
 const renderLoadingState = (cityLabel: string): void => {
+  weatherSymbol.className = 'weather-symbol'
   weatherSymbol.textContent = '⏳'
   temperaturePlaceholder.textContent = '--°'
   emptyTitle.textContent = cityLabel
   currentDay.textContent = '--'
   emptyCopy.textContent = 'Checking city data and weather forecast…'
-  summaryFooterValue.textContent = '--'
   hourlyContent.className = 'empty-forecast'
   dailyContent.className = 'daily-empty'
   hourlyContent.innerHTML = `
@@ -224,7 +218,6 @@ const renderResultState = (city: CityLocation, weather: ForecastData): void => {
   emptyTitle.textContent = `${cityName}, ${city.country_code}`
   currentDay.textContent = `${formatDay(current.time)} · ${dayState}`
   emptyCopy.textContent = current.description
-  summaryFooterValue.textContent = formatTemperature(current.temperature)
   hourlyContent.className = 'hourly-content'
   dailyContent.className = 'daily-content'
   hourlyContent.innerHTML = weather.hourly
@@ -262,9 +255,8 @@ const renderEmptyState = (message: string): void => {
   weatherSymbol.textContent = '–'
   temperaturePlaceholder.textContent = '--°'
   emptyTitle.textContent = 'No results'
-    currentDay.textContent = '--'
+  currentDay.textContent = '--'
   emptyCopy.textContent = message
-  summaryFooterValue.textContent = '--'
   hourlyContent.className = 'empty-forecast'
   dailyContent.className = 'daily-empty'
   hourlyContent.innerHTML = `
