@@ -2,6 +2,8 @@
 
 This task list follows the requirements in @file:prd.md and is structured to be completed progressively, one task at a time.
 
+Type declarations in this project should use TypeScript type aliases (`type`) instead of interfaces for all custom types.
+
 [X] 1. Set up the project foundation and app shell
   - Create the base Vite + TypeScript app structure and confirm the project runs locally.
   - Prepare the initial HTML, CSS, and TypeScript entry files needed for the dashboard layout.
@@ -18,7 +20,7 @@ This task list follows the requirements in @file:prd.md and is structured to be 
     - The layout clearly separates the summary panel from the main forecast area.
     - The design is responsive and remains legible on smaller screens.
 
-[] 3. Create the city-search input behavior
+[X] 3. Create the city-search input behavior
   - Add the search field interaction so the user can type a city name and trigger a search action.
   - Connect the UI to the app state that tracks idle, loading, success, error, and no-result states.
   - Approval criteria:
@@ -26,7 +28,7 @@ This task list follows the requirements in @file:prd.md and is structured to be 
     - The app distinguishes between an initial idle state and an active search.
     - The input remains usable and the flow feels like a single user action.
 
-[] 4. Implement the Open-Meteo API abstraction layer
+[X] 4. Implement the Open-Meteo API abstraction layer
   - Create a dedicated API module that owns all Open-Meteo requests and validation logic.
   - Encapsulate city lookup and weather forecast requests as separate functions, with parameter checks before requests are made.
   - Approval criteria:

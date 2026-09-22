@@ -119,6 +119,7 @@ The loading state should mask the fact that there are two backend calls and appe
 - The UI should be visually clean and easy to scan.
 - Error handling must be clear and user-friendly.
 - The project should avoid direct API calls from the UI layer; instead, use a dedicated file with API functions.
+- TypeScript type declarations must use type aliases rather than interfaces for project types.
 
 ### 3.3 Data Validation Rules
 The Open-Meteo API helper functions must check whether required parameters exist before using them.
