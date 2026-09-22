@@ -64,6 +64,7 @@
   .weather-symbol { color: var(--accent); font-size: 64px; line-height: 1; }
   .temperature-placeholder { margin: 18px 0 8px; font-family: Georgia, serif; font-size: 58px; letter-spacing: -.06em; }
   .empty-title { margin-bottom: 5px; font-size: 16px; font-weight: 700; }
+  .current-day { margin: 0 0 5px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
   .empty-copy { max-width: 190px; margin-bottom: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
   .summary-footer { display: flex; justify-content: space-between; padding-top: 18px; border-top: 1px solid #d7ded9; color: var(--muted); font-size: 12px; }
   .summary-footer strong { color: var(--ink); font-weight: 500; }

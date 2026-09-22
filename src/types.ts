@@ -15,30 +15,33 @@ export type CityLocation = {
 
 export type CurrentWeather = {
   time: string
-  temperature_2m: number | null
-  relative_humidity_2m: number | null
-  apparent_temperature: number | null
-  is_day: number | null
-  wind_speed_10m: number | null
-  wind_direction_10m: number | null
+  temperature: number | null
+  relativeHumidity: number | null
+  apparentTemperature: number | null
+  isDay: boolean | null
+  windSpeed: number | null
+  windDirection: number | null
   precipitation: number | null
-  weather_code: number | null
+  weatherCode: number | null
+  description: string
 }
 
 export type HourlyForecastEntry = {
   time: string
-  temperature_2m: number | null
-  precipitation_probability: number | null
-  weather_code: number | null
+  temperature: number | null
+  precipitationProbability: number | null
+  weatherCode: number | null
+  description: string
 }
 
 export type DailyForecastEntry = {
   time: string
-  temperature_2m_max: number | null
-  temperature_2m_min: number | null
-  precipitation_sum: number | null
-  precipitation_probability_max: number | null
-  weather_code: number | null
+  temperatureMax: number | null
+  temperatureMin: number | null
+  precipitationSum: number | null
+  precipitationProbabilityMax: number | null
+  weatherCode: number | null
+  description: string
 }
 
 export type ForecastData = {

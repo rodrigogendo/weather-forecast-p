@@ -39,6 +39,7 @@ appRoot.innerHTML = `
         <span class="weather-symbol" aria-hidden="true">☼</span>
         <p class="temperature-placeholder">--°</p>
         <p class="empty-title">No location selected</p>
+        <p class="current-day">--</p>
         <p class="empty-copy">Search for a city to see current conditions.</p>
       </div>
       <div class="summary-footer">
@@ -91,39 +92,9 @@ const summaryFooterValue = document.querySelector<HTMLElement>('.summary-footer 
 const hourlyContent = document.querySelector<HTMLElement>('#hourly-content')
 const dailyContent = document.querySelector<HTMLElement>('#daily-content')
 
-if (!form || !searchInput || !submitButton || !weatherSymbol || !temperaturePlaceholder || !emptyTitle || !emptyCopy || !summaryFooterValue || !hourlyContent || !dailyContent) {
+const currentDay = document.querySelector<HTMLElement>('.current-day')
+if (!form || !searchInput || !submitButton || !weatherSymbol || !temperaturePlaceholder || !emptyTitle || !currentDay || !emptyCopy || !summaryFooterValue || !hourlyContent || !dailyContent) {
   throw new Error('Required dashboard elements were not found.')
-}
-
-const weatherCodeMap: Record<number, string> = {
-  0: 'Clear sky',
-  1: 'Mainly clear',
-  2: 'Partly cloudy',
-  3: 'Overcast',
-  45: 'Fog',
-  48: 'Rime fog',
-  51: 'Light drizzle',
-  53: 'Drizzle',
-  55: 'Dense drizzle',
-  56: 'Freezing drizzle',
-  57: 'Heavy freezing drizzle',
-  61: 'Light rain',
-  63: 'Rain',
-  65: 'Heavy rain',
-  66: 'Freezing rain',
-  67: 'Heavy freezing rain',
-  71: 'Light snow',
-  73: 'Snow',
-  75: 'Heavy snow',
-  77: 'Snow grains',
-  80: 'Rain showers',
-  81: 'Heavy showers',
-  82: 'Violent showers',
-  85: 'Snow showers',
-  86: 'Heavy snow showers',
-  95: 'Thunderstorm',
-  96: 'Thunderstorm with hail',
-  99: 'Heavy thunderstorm with hail',
 }
 
 const defaultState: AppState = {
@@ -141,14 +112,6 @@ const formatTemperature = (value: number | null): string => {
   }
 
   return `${Math.round(value)}°`
-}
-
-const formatWeatherDescription = (code: number | null): string => {
-  if (code === null || !(code in weatherCodeMap)) {
-    return 'Weather update unavailable'
-  }
-
-  return weatherCodeMap[code]
 }
 
 const formatTime = (value: string): string => {
@@ -181,6 +144,7 @@ const renderIdleState = (): void => {
   weatherSymbol.textContent = '☼'
   temperaturePlaceholder.textContent = '--°'
   emptyTitle.textContent = 'No location selected'
+  currentDay.textContent = '--'
   emptyCopy.textContent = 'Search for a city to see current conditions.'
   summaryFooterValue.textContent = '--'
   hourlyContent.innerHTML = `
@@ -197,6 +161,7 @@ const renderLoadingState = (cityLabel: string): void => {
   weatherSymbol.textContent = '⏳'
   temperaturePlaceholder.textContent = '--°'
   emptyTitle.textContent = cityLabel
+  currentDay.textContent = '--'
   emptyCopy.textContent = 'Checking city data and weather forecast…'
   summaryFooterValue.textContent = '--'
   hourlyContent.innerHTML = `
@@ -212,24 +177,24 @@ const renderLoadingState = (cityLabel: string): void => {
 const renderResultState = (city: CityLocation, weather: ForecastData): void => {
   const current = weather.current
   const cityName = city.name
-  const weatherCodeLabel = formatWeatherDescription(current.weather_code)
-  const dayState = current.is_day === 1 ? 'Day' : 'Night'
+  const dayState = current.isDay === null ? 'Unknown light' : current.isDay ? 'Day' : 'Night'
 
-  weatherSymbol.textContent = current.is_day === 1 ? '☀' : '☾'
-  temperaturePlaceholder.textContent = formatTemperature(current.temperature_2m)
+  weatherSymbol.textContent = current.isDay ? '☀' : '☾'
+  temperaturePlaceholder.textContent = formatTemperature(current.temperature)
   emptyTitle.textContent = cityName
-  emptyCopy.textContent = `${city.country_code} • ${weatherCodeLabel} • ${dayState}`
-  summaryFooterValue.textContent = formatTemperature(current.temperature_2m)
-
+  currentDay.textContent = `${formatDay(current.time)} · ${dayState}`
+  emptyCopy.textContent = `${city.country_code} · ${current.description}`
+  summaryFooterValue.textContent = formatTemperature(current.temperature)
   hourlyContent.innerHTML = weather.hourly
     .slice(0, 8)
     .map(
       (item) => `
         <div class="hourly-item">
-          <span>${formatWeatherDescription(item.weather_code)}</span>
+          <span>${item.description}</span>
           <strong>${formatTime(item.time)}</strong>
-          <span>${formatTemperature(item.temperature_2m)}</span>
-          <span>${item.precipitation_probability === null ? '--%' : `${Math.round(item.precipitation_probability)}%`}</span>
+          <span>${formatTemperature(item.temperature)}</span>
+          <span>${formatTemperature(item.temperature)}</span>
+          <span>${item.precipitationProbability === null ? '--%' : `${Math.round(item.precipitationProbability)}%`}</span>
         </div>
       `,
     )
@@ -241,11 +206,12 @@ const renderResultState = (city: CityLocation, weather: ForecastData): void => {
       (item) => `
         <div class="daily-item">
           <span>${formatDay(item.time)}</span>
-          <span>${formatWeatherDescription(item.weather_code)}</span>
-          <span>${formatTemperature(item.temperature_2m_max)}</span>
-          <span>${formatTemperature(item.temperature_2m_min)}</span>
-          <span>${item.precipitation_sum === null ? '--' : `${item.precipitation_sum.toFixed(1)} mm`}</span>
-          <span>${item.precipitation_probability_max === null ? '--%' : `${Math.round(item.precipitation_probability_max)}%`}</span>
+          <span>${item.description}</span>
+          <span>${item.description}</span>
+          <span>${formatTemperature(item.temperatureMax)}</span>
+          <span>${formatTemperature(item.temperatureMin)}</span>
+          <span>${item.precipitationSum === null ? '--' : `${item.precipitationSum.toFixed(1)} mm`}</span>
+          <span>${item.precipitationProbabilityMax === null ? '--%' : `${Math.round(item.precipitationProbabilityMax)}%`}</span>
         </div>
       `,
     )
@@ -256,6 +222,7 @@ const renderEmptyState = (message: string): void => {
   weatherSymbol.textContent = '–'
   temperaturePlaceholder.textContent = '--°'
   emptyTitle.textContent = 'No results'
+    currentDay.textContent = '--'
   emptyCopy.textContent = message
   summaryFooterValue.textContent = '--'
   hourlyContent.innerHTML = `

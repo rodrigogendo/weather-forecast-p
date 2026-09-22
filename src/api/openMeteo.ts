@@ -6,6 +6,40 @@ export type WeatherLookupResult = ApiResult<ForecastData>
 const geocodingBaseUrl = 'https://geocoding-api.open-meteo.com/v1/search'
 const forecastBaseUrl = 'https://api.open-meteo.com/v1/forecast'
 
+const weatherCodeMap: Record<number, string> = {
+  0: 'Clear sky',
+  1: 'Mainly clear',
+  2: 'Partly cloudy',
+  3: 'Overcast',
+  45: 'Fog',
+  48: 'Rime fog',
+  51: 'Light drizzle',
+  53: 'Drizzle',
+  55: 'Dense drizzle',
+  56: 'Freezing drizzle',
+  57: 'Heavy freezing drizzle',
+  61: 'Light rain',
+  63: 'Rain',
+  65: 'Heavy rain',
+  66: 'Freezing rain',
+  67: 'Heavy freezing rain',
+  71: 'Light snow',
+  73: 'Snow',
+  75: 'Heavy snow',
+  77: 'Snow grains',
+  80: 'Rain showers',
+  81: 'Heavy showers',
+  82: 'Violent showers',
+  85: 'Snow showers',
+  86: 'Heavy snow showers',
+  95: 'Thunderstorm',
+  96: 'Thunderstorm with hail',
+  99: 'Heavy thunderstorm with hail',
+}
+
+const describeWeatherCode = (code: number | null): string =>
+  code === null ? 'Weather update unavailable' : weatherCodeMap[code] ?? 'Weather update unavailable'
+
 const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === 'object' && value !== null
 
 const isValidCityLocation = (value: unknown): value is CityLocation => {
@@ -47,17 +81,36 @@ const isValidWeatherPayload = (value: unknown): value is Record<string, unknown>
   const hourly = value.hourly
   const daily = value.daily
 
-  return (
-    isRecord(current) &&
-    isRecord(hourly) &&
-    isRecord(daily) &&
+  if (!isRecord(current) || !isRecord(hourly) || !isRecord(daily)) {
+    return false
+  }
+
+  const hasCurrentFields =
+    typeof current.time === 'string' &&
+    (typeof current.temperature_2m === 'number' || current.temperature_2m === null) &&
+    (typeof current.relative_humidity_2m === 'number' || current.relative_humidity_2m === null) &&
+    (typeof current.apparent_temperature === 'number' || current.apparent_temperature === null) &&
+    (typeof current.is_day === 'number' || current.is_day === null) &&
+    (typeof current.wind_speed_10m === 'number' || current.wind_speed_10m === null) &&
+    (typeof current.wind_direction_10m === 'number' || current.wind_direction_10m === null) &&
+    (typeof current.precipitation === 'number' || current.precipitation === null) &&
+    (typeof current.weather_code === 'number' || current.weather_code === null)
+
+  const hasHourlyFields =
     Array.isArray(hourly.time) &&
+    Array.isArray(hourly.temperature_2m) &&
+    Array.isArray(hourly.precipitation_probability) &&
+    Array.isArray(hourly.weather_code)
+
+  const hasDailyFields =
     Array.isArray(daily.time) &&
     Array.isArray(daily.temperature_2m_max) &&
     Array.isArray(daily.temperature_2m_min) &&
     Array.isArray(daily.precipitation_sum) &&
-    Array.isArray(daily.precipitation_probability_max)
-  )
+    Array.isArray(daily.precipitation_probability_max) &&
+    Array.isArray(daily.weather_code)
+
+  return hasCurrentFields && hasHourlyFields && hasDailyFields
 }
 
 export async function getCityCoordinates(cityName: string): Promise<CityLookupResult> {
@@ -137,24 +190,27 @@ export async function getWeatherForecast(
 
     const current: CurrentWeather = {
       time: typeof currentRecord.time === 'string' ? currentRecord.time : '',
-      temperature_2m: typeof currentRecord.temperature_2m === 'number' ? currentRecord.temperature_2m : null,
-      relative_humidity_2m: typeof currentRecord.relative_humidity_2m === 'number' ? currentRecord.relative_humidity_2m : null,
-      apparent_temperature: typeof currentRecord.apparent_temperature === 'number' ? currentRecord.apparent_temperature : null,
-      is_day: typeof currentRecord.is_day === 'number' ? currentRecord.is_day : null,
-      wind_speed_10m: typeof currentRecord.wind_speed_10m === 'number' ? currentRecord.wind_speed_10m : null,
-      wind_direction_10m: typeof currentRecord.wind_direction_10m === 'number' ? currentRecord.wind_direction_10m : null,
+      temperature: typeof currentRecord.temperature_2m === 'number' ? currentRecord.temperature_2m : null,
+      relativeHumidity: typeof currentRecord.relative_humidity_2m === 'number' ? currentRecord.relative_humidity_2m : null,
+      apparentTemperature: typeof currentRecord.apparent_temperature === 'number' ? currentRecord.apparent_temperature : null,
+      isDay: typeof currentRecord.is_day === 'number' ? currentRecord.is_day === 1 : null,
+      windSpeed: typeof currentRecord.wind_speed_10m === 'number' ? currentRecord.wind_speed_10m : null,
+      windDirection: typeof currentRecord.wind_direction_10m === 'number' ? currentRecord.wind_direction_10m : null,
       precipitation: typeof currentRecord.precipitation === 'number' ? currentRecord.precipitation : null,
-      weather_code: typeof currentRecord.weather_code === 'number' ? currentRecord.weather_code : null,
+      weatherCode: typeof currentRecord.weather_code === 'number' ? currentRecord.weather_code : null,
+      description: describeWeatherCode(typeof currentRecord.weather_code === 'number' ? currentRecord.weather_code : null),
     }
 
     const hourlyTimes = readStringList(hourlyRecord.time)
     const tempHourly = readNumberList(hourlyRecord.temperature_2m)
     const precipitationProbability = readNumberList(hourlyRecord.precipitation_probability)
+    const hourlyWeatherCodes = readNumberList(hourlyRecord.weather_code)
     const hourly: HourlyForecastEntry[] = hourlyTimes.map((time, index) => ({
       time,
-      temperature_2m: tempHourly[index] ?? null,
-      precipitation_probability: precipitationProbability[index] ?? null,
-      weather_code: typeof hourlyRecord.weather_code === 'number' ? hourlyRecord.weather_code : null,
+      temperature: tempHourly[index] ?? null,
+      precipitationProbability: precipitationProbability[index] ?? null,
+      weatherCode: hourlyWeatherCodes[index] ?? null,
+      description: describeWeatherCode(hourlyWeatherCodes[index] ?? null),
     }))
 
     const dailyTimes = readStringList(dailyRecord.time)
@@ -162,13 +218,15 @@ export async function getWeatherForecast(
     const dailyMin = readNumberList(dailyRecord.temperature_2m_min)
     const dailyRain = readNumberList(dailyRecord.precipitation_sum)
     const dailyRainChance = readNumberList(dailyRecord.precipitation_probability_max)
+    const dailyWeatherCodes = readNumberList(dailyRecord.weather_code)
     const daily: DailyForecastEntry[] = dailyTimes.map((time, index) => ({
       time,
-      temperature_2m_max: dailyMax[index] ?? null,
-      temperature_2m_min: dailyMin[index] ?? null,
-      precipitation_sum: dailyRain[index] ?? null,
-      precipitation_probability_max: dailyRainChance[index] ?? null,
-      weather_code: typeof dailyRecord.weather_code === 'number' ? dailyRecord.weather_code : null,
+      temperatureMax: dailyMax[index] ?? null,
+      temperatureMin: dailyMin[index] ?? null,
+      precipitationSum: dailyRain[index] ?? null,
+      precipitationProbabilityMax: dailyRainChance[index] ?? null,
+      weatherCode: dailyWeatherCodes[index] ?? null,
+      description: describeWeatherCode(dailyWeatherCodes[index] ?? null),
     }))
 
     const forecast: ForecastData = {

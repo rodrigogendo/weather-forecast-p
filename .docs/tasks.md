@@ -36,7 +36,7 @@ Type declarations in this project should use TypeScript type aliases (`type`) in
     - Missing or invalid parameters are treated as empty or failed results rather than causing crashes.
     - The API functions return structured empty/error states for invalid or missing data.
 
-[] 5. Add city geocoding request and validation
+[X] 5. Add city geocoding request and validation
   - Implement the city lookup request using the geocoding endpoint and validate the returned city data.
   - Confirm that required fields such as name, latitude, longitude, country code, and timezone are present before continuing.
   - Approval criteria:
@@ -44,7 +44,7 @@ Type declarations in this project should use TypeScript type aliases (`type`) in
     - A missing or malformed city response is treated as “no result” and does not break rendering.
     - A failed geocoding request is handled gracefully with the correct empty-state behavior.
 
-[] 6. Add weather forecast request and validation
+[X] 6. Add weather forecast request and validation
   - Implement the weather request using latitude, longitude, and timezone from the city result.
   - Validate that the response contains the required current, hourly, and daily fields before rendering.
   - Approval criteria:
@@ -52,7 +52,7 @@ Type declarations in this project should use TypeScript type aliases (`type`) in
     - Missing weather data produces a no-result state rather than broken UI.
     - The app handles both failed and empty weather responses consistently.
 
-[] 7. Normalize and prepare weather data for rendering
+[X] 7. Normalize and prepare weather data for rendering
   - Convert API responses into the app’s forecast structure, including current conditions, hourly entries, and daily entries.
   - Apply the required weather-code mapping to readable descriptions.
   - Approval criteria:
@@ -60,7 +60,7 @@ Type declarations in this project should use TypeScript type aliases (`type`) in
     - Weather codes map to human-readable labels such as “Clear sky” or “Rain”.
     - Rendering logic can consume the normalized data without depending on raw API shapes.
 
-[] 8. Render the sidebar summary information
+[X] 8. Render the sidebar summary information
   - Display the current temperature, city name, country code, current day, day/night indicator, and weather code in the summary panel.
   - Ensure the summary remains visually distinct and easy to scan.
   - Approval criteria:
