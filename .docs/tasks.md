@@ -84,7 +84,7 @@ Type declarations in this project should use TypeScript type aliases (`type`) in
     - Each row includes the required forecast information.
     - The layout matches the dashboard design direction without clutter.
 
-[] 11. Implement loading, empty, and error states
+[X] 11. Implement loading, empty, and error states
   - Add the loading indicator during the combined city-plus-weather search flow and ensure it appears as one action.
   - Add the no-result and empty-state messages for no city, no weather data, or no search yet.
   - Approval criteria:
@@ -92,7 +92,7 @@ Type declarations in this project should use TypeScript type aliases (`type`) in
     - Each invalid or empty search ends in a clear user-friendly message.
     - The UI does not show broken data or a blank panel when the search result is empty.
 
-[] 12. Final integration and behavior verification
+[X] 12. Final integration and behavior verification
   - Connect all UI, state management, API, and rendering pieces into the full weather-dashboard flow.
   - Verify the complete user journey: search city -> validate city -> fetch weather -> render results -> handle empty/error states.
   - Approval criteria:
