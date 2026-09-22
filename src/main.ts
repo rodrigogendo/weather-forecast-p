@@ -137,7 +137,43 @@ const formatDay = (value: string): string => {
     return value
   }
 
-  return date.toLocaleDateString([], { weekday: 'short' })
+  return date.toLocaleDateString('en-US', { weekday: 'short' })
+}
+
+const getWeatherIcon = (code: number | null): string => {
+  if (code === null) {
+    return '？'
+  }
+
+  if (code === 0 || code === 1) {
+    return '☀'
+  }
+
+  if (code === 2) {
+    return '⛅'
+  }
+
+  if (code === 3) {
+    return '☁'
+  }
+
+  if (code === 45 || code === 48) {
+    return '〰'
+  }
+
+  if (code >= 51 && code <= 67 || code >= 80 && code <= 82) {
+    return '☂'
+  }
+
+  if (code >= 71 && code <= 77 || code === 85 || code === 86) {
+    return '❄'
+  }
+
+  if (code >= 95) {
+    return '⚡'
+  }
+
+  return '☁'
 }
 
 const renderIdleState = (): void => {
@@ -147,6 +183,8 @@ const renderIdleState = (): void => {
   currentDay.textContent = '--'
   emptyCopy.textContent = 'Search for a city to see current conditions.'
   summaryFooterValue.textContent = '--'
+  hourlyContent.className = 'empty-forecast'
+  dailyContent.className = 'daily-empty'
   hourlyContent.innerHTML = `
     <span class="empty-line" aria-hidden="true"></span>
     <p>Hourly details will appear here</p>
@@ -164,6 +202,8 @@ const renderLoadingState = (cityLabel: string): void => {
   currentDay.textContent = '--'
   emptyCopy.textContent = 'Checking city data and weather forecast…'
   summaryFooterValue.textContent = '--'
+  hourlyContent.className = 'empty-forecast'
+  dailyContent.className = 'daily-empty'
   hourlyContent.innerHTML = `
     <span class="empty-line" aria-hidden="true"></span>
     <p>Loading hourly forecast…</p>
@@ -181,20 +221,21 @@ const renderResultState = (city: CityLocation, weather: ForecastData): void => {
 
   weatherSymbol.textContent = current.isDay ? '☀' : '☾'
   temperaturePlaceholder.textContent = formatTemperature(current.temperature)
-  emptyTitle.textContent = cityName
+  emptyTitle.textContent = `${cityName}, ${city.country_code}`
   currentDay.textContent = `${formatDay(current.time)} · ${dayState}`
-  emptyCopy.textContent = `${city.country_code} · ${current.description}`
+  emptyCopy.textContent = current.description
   summaryFooterValue.textContent = formatTemperature(current.temperature)
+  hourlyContent.className = 'hourly-content'
+  dailyContent.className = 'daily-content'
   hourlyContent.innerHTML = weather.hourly
-    .slice(0, 8)
+    .slice(0, 24)
     .map(
       (item) => `
         <div class="hourly-item">
-          <span>${item.description}</span>
-          <strong>${formatTime(item.time)}</strong>
-          <span>${formatTemperature(item.temperature)}</span>
-          <span>${formatTemperature(item.temperature)}</span>
-          <span>${item.precipitationProbability === null ? '--%' : `${Math.round(item.precipitationProbability)}%`}</span>
+          <span class="forecast-time">${formatTime(item.time)}</span>
+          <span class="forecast-condition"><span class="forecast-icon" aria-hidden="true">${getWeatherIcon(item.weatherCode)}</span>${item.description}</span>
+          <strong class="forecast-temperature">${formatTemperature(item.temperature)}</strong>
+          <span class="forecast-precipitation">${item.precipitationProbability === null ? '--%' : `${Math.round(item.precipitationProbability)}%`} rain</span>
         </div>
       `,
     )
@@ -205,13 +246,12 @@ const renderResultState = (city: CityLocation, weather: ForecastData): void => {
     .map(
       (item) => `
         <div class="daily-item">
-          <span>${formatDay(item.time)}</span>
-          <span>${item.description}</span>
-          <span>${item.description}</span>
-          <span>${formatTemperature(item.temperatureMax)}</span>
-          <span>${formatTemperature(item.temperatureMin)}</span>
-          <span>${item.precipitationSum === null ? '--' : `${item.precipitationSum.toFixed(1)} mm`}</span>
-          <span>${item.precipitationProbabilityMax === null ? '--%' : `${Math.round(item.precipitationProbabilityMax)}%`}</span>
+          <strong class="daily-day">${formatDay(item.time)}</strong>
+          <span class="daily-condition"><span class="forecast-icon" aria-hidden="true">${getWeatherIcon(item.weatherCode)}</span>${item.description}</span>
+          <span><small>High</small>${formatTemperature(item.temperatureMax)}</span>
+          <span><small>Low</small>${formatTemperature(item.temperatureMin)}</span>
+          <span><small>Rain</small>${item.precipitationSum === null ? '--' : `${item.precipitationSum.toFixed(1)} mm`}</span>
+          <span><small>Chance</small>${item.precipitationProbabilityMax === null ? '--%' : `${Math.round(item.precipitationProbabilityMax)}%`}</span>
         </div>
       `,
     )
@@ -225,6 +265,8 @@ const renderEmptyState = (message: string): void => {
     currentDay.textContent = '--'
   emptyCopy.textContent = message
   summaryFooterValue.textContent = '--'
+  hourlyContent.className = 'empty-forecast'
+  dailyContent.className = 'daily-empty'
   hourlyContent.innerHTML = `
     <span class="empty-line" aria-hidden="true"></span>
     <p>${message}</p>

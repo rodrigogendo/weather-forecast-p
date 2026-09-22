@@ -74,6 +74,19 @@
   .empty-forecast p, .daily-empty p { margin: 14px 0 0; font-size: 13px; }
   .empty-line { width: 75%; height: 1px; background: repeating-linear-gradient(90deg, var(--line) 0 4px, transparent 4px 10px); }
   .calendar-mark { color: var(--faint); font-size: 36px; line-height: 1; }
+  .hourly-content { display: flex; gap: 10px; min-height: 146px; padding: 24px 0 6px; overflow-x: auto; scrollbar-color: var(--accent) transparent; }
+  .hourly-item { display: flex; width: 126px; min-width: 126px; min-height: 138px; flex-direction: column; gap: 8px; padding: 14px 12px; border: 1px solid var(--line); border-radius: 7px; background: #fbfcfa; }
+  .forecast-time, .forecast-precipitation { color: var(--muted); font-size: 11px; }
+  .forecast-time { font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .forecast-condition { display: flex; min-height: 32px; align-items: center; gap: 6px; color: var(--ink); font-size: 12px; line-height: 1.35; }
+  .forecast-icon { flex: 0 0 auto; color: var(--accent); font-size: 19px; line-height: 1; }
+  .forecast-temperature { margin-top: auto; font-family: Georgia, serif; font-size: 25px; font-weight: 400; }
+  .forecast-precipitation { color: var(--accent); }
+  .daily-content { padding-top: 24px; }
+  .daily-item { display: grid; grid-template-columns: 72px minmax(100px, 1.4fr) repeat(4, minmax(52px, .7fr)); gap: 14px; align-items: center; padding: 14px 0; border-top: 1px solid var(--line); font-size: 13px; }
+  .daily-item small { display: block; margin-bottom: 4px; color: var(--muted); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+  .daily-day { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
+  .daily-condition { display: flex; align-items: center; gap: 6px; color: var(--muted); }
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 
   @media (max-width: 760px) {
@@ -87,5 +100,7 @@
     .summary-panel { min-height: 380px; }
     .forecast-area { grid-template-rows: auto auto; }
     .forecast-panel { min-height: 230px; }
+    .daily-content { overflow-x: auto; }
+    .daily-item { min-width: 555px; grid-template-columns: 58px minmax(90px, 1fr) repeat(4, minmax(52px, .7fr)); gap: 9px; font-size: 12px; }
   }
   border-radius: 4px;

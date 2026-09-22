@@ -68,7 +68,7 @@ Type declarations in this project should use TypeScript type aliases (`type`) in
     - The day/night state is represented clearly.
     - The displayed values are sourced from validated forecast data.
 
-[] 9. Render the hourly forecast section
+[X] 9. Render the hourly forecast section
   - Build the top forecast panel with a horizontal or scrollable list of hourly entries.
   - Show weather code, time, temperature, and precipitation probability for each entry.
   - Approval criteria:
@@ -76,7 +76,7 @@ Type declarations in this project should use TypeScript type aliases (`type`) in
     - Each card or item includes all required data points.
     - The layout remains readable and usable across screen sizes.
 
-[] 10. Render the daily forecast section
+[X] 10. Render the daily forecast section
   - Build the lower forecast panel with daily entries and show the required values.
   - Include maximum temperature, minimum temperature, precipitation sum, precipitation probability maximum, and weather code.
   - Approval criteria:
