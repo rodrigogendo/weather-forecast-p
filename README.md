@@ -1,6 +1,6 @@
 # Skyline Weather
 
-A lightweight weather dashboard built with Vite, TypeScript, and vanilla HTML/CSS. Search for a city to view current conditions, the next 24 hours, and a seven-day forecast.
+A lightweight weather dashboard built with Vite, Vanilla TypeScript, HTML/CSS. Search for a city to view current conditions, the next 24 hours, and a seven-day forecast.
 
 ## Features
 
