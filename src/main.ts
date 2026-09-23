@@ -39,7 +39,15 @@ appRoot.innerHTML = `
         <p class="temperature-placeholder">--°</p>
         <p class="empty-title">No location selected</p>
         <p class="current-day">--</p>
-        <p class="empty-copy">Search for a city to see current conditions.</p>
+        <p class="empty-copy current-condition">
+          <span id="current-weather-icon" class="forecast-icon" aria-hidden="true">☼</span>
+          <span id="current-description">Search for a city to see current conditions.</span>
+        </p>
+        <dl class="current-details" aria-label="Additional current conditions">
+          <div><dt>Humidity</dt><dd id="humidity-value">--%</dd></div>
+          <div><dt>Feels like</dt><dd id="apparent-temperature-value">--°</dd></div>
+          <div><dt>Wind</dt><dd id="wind-value">--</dd></div>
+        </dl>
       </div>
     </aside>
 
@@ -82,12 +90,16 @@ const submitButton = document.querySelector<HTMLButtonElement>('.search-form but
 const weatherSymbol = document.querySelector<HTMLElement>('.weather-symbol')
 const temperaturePlaceholder = document.querySelector<HTMLElement>('.temperature-placeholder')
 const emptyTitle = document.querySelector<HTMLElement>('.empty-title')
-const emptyCopy = document.querySelector<HTMLElement>('.empty-copy')
+const currentWeatherIcon = document.querySelector<HTMLElement>('#current-weather-icon')
+const currentDescription = document.querySelector<HTMLElement>('#current-description')
 const hourlyContent = document.querySelector<HTMLElement>('#hourly-content')
 const dailyContent = document.querySelector<HTMLElement>('#daily-content')
 
 const currentDay = document.querySelector<HTMLElement>('.current-day')
-if (!form || !searchInput || !submitButton || !weatherSymbol || !temperaturePlaceholder || !emptyTitle || !currentDay || !emptyCopy || !hourlyContent || !dailyContent) {
+const humidityValue = document.querySelector<HTMLElement>('#humidity-value')
+const apparentTemperatureValue = document.querySelector<HTMLElement>('#apparent-temperature-value')
+const windValue = document.querySelector<HTMLElement>('#wind-value')
+if (!form || !searchInput || !submitButton || !weatherSymbol || !temperaturePlaceholder || !emptyTitle || !currentDay || !currentWeatherIcon || !currentDescription || !hourlyContent || !dailyContent || !humidityValue || !apparentTemperatureValue || !windValue) {
   throw new Error('Required dashboard elements were not found.')
 }
 
@@ -107,6 +119,17 @@ const formatTemperature = (value: number | null): string => {
 
   return `${Math.round(value)}°`
 }
+
+const formatPercentage = (value: number | null): string => (value === null ? '--%' : `${Math.round(value)}%`)
+
+const formatWind = (value: number | null): string => (value === null ? '--' : `${Math.round(value)} km/h`)
+
+const escapeHtml = (value: string): string =>
+  value.replace(
+    /[&<>"']/g,
+    (character) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character] ?? character,
+  )
 
 const formatTime = (value: string): string => {
   if (!value) {
@@ -176,7 +199,11 @@ const renderIdleState = (): void => {
   temperaturePlaceholder.textContent = '--°'
   emptyTitle.textContent = 'No location selected'
   currentDay.textContent = '--'
-  emptyCopy.textContent = 'Search for a city to see current conditions.'
+  currentWeatherIcon.textContent = '☼'
+  currentDescription.textContent = 'Search for a city to see current conditions.'
+  humidityValue.textContent = '--%'
+  apparentTemperatureValue.textContent = '--°'
+  windValue.textContent = '--'
   hourlyContent.className = 'empty-forecast'
   dailyContent.className = 'daily-empty'
   hourlyContent.innerHTML = `
@@ -195,7 +222,11 @@ const renderLoadingState = (): void => {
   temperaturePlaceholder.textContent = '--°'
   emptyTitle.textContent = 'Loading forecast'
   currentDay.textContent = '--'
-  emptyCopy.textContent = 'Checking city data and weather forecast…'
+  currentWeatherIcon.textContent = ''
+  currentDescription.textContent = 'Checking city data and weather forecast…'
+  humidityValue.textContent = '--%'
+  apparentTemperatureValue.textContent = '--°'
+  windValue.textContent = '--'
   hourlyContent.className = 'empty-forecast'
   dailyContent.className = 'daily-empty'
   hourlyContent.innerHTML = `
@@ -214,11 +245,15 @@ const renderResultState = (city: CityLocation, weather: ForecastData): void => {
   const dayState = current.isDay === null ? 'Unknown light' : current.isDay ? 'Day' : 'Night'
 
   weatherSymbol.className = 'weather-symbol'
-  weatherSymbol.textContent = current.isDay ? '☀' : '☾'
+  weatherSymbol.textContent = current.isDay === null ? '？' : current.isDay ? '☀' : '☾'
   temperaturePlaceholder.textContent = formatTemperature(current.temperature)
   emptyTitle.textContent = `${cityName}, ${city.country_code}`
   currentDay.textContent = `${formatDay(current.time)} · ${dayState}`
-  emptyCopy.textContent = current.description
+  currentWeatherIcon.textContent = getWeatherIcon(current.weatherCode)
+  currentDescription.textContent = current.description
+  humidityValue.textContent = formatPercentage(current.relativeHumidity)
+  apparentTemperatureValue.textContent = formatTemperature(current.apparentTemperature)
+  windValue.textContent = formatWind(current.windSpeed)
   hourlyContent.className = 'hourly-content'
   dailyContent.className = 'daily-content'
   hourlyContent.innerHTML = weather.hourly
@@ -226,10 +261,10 @@ const renderResultState = (city: CityLocation, weather: ForecastData): void => {
     .map(
       (item) => `
         <div class="hourly-item">
-          <span class="forecast-time">${formatTime(item.time)}</span>
-          <span class="forecast-condition"><span class="forecast-icon" aria-hidden="true">${getWeatherIcon(item.weatherCode)}</span>${item.description}</span>
+          <span class="forecast-time">${escapeHtml(formatTime(item.time))}</span>
+          <span class="forecast-condition"><span class="forecast-icon" aria-hidden="true">${getWeatherIcon(item.weatherCode)}</span>${escapeHtml(item.description)}</span>
           <strong class="forecast-temperature">${formatTemperature(item.temperature)}</strong>
-          <span class="forecast-precipitation">${item.precipitationProbability === null ? '--%' : `${Math.round(item.precipitationProbability)}%`} rain</span>
+          <span class="forecast-precipitation">${formatPercentage(item.precipitationProbability)} rain</span>
         </div>
       `,
     )
@@ -240,12 +275,12 @@ const renderResultState = (city: CityLocation, weather: ForecastData): void => {
     .map(
       (item) => `
         <div class="daily-item">
-          <strong class="daily-day">${formatDay(item.time)}</strong>
-          <span class="daily-condition"><span class="forecast-icon" aria-hidden="true">${getWeatherIcon(item.weatherCode)}</span>${item.description}</span>
+            <strong class="daily-day">${escapeHtml(formatDay(item.time))}</strong>
+            <span class="daily-condition"><span class="forecast-icon" aria-hidden="true">${getWeatherIcon(item.weatherCode)}</span>${escapeHtml(item.description)}</span>
           <span><small>High</small>${formatTemperature(item.temperatureMax)}</span>
           <span><small>Low</small>${formatTemperature(item.temperatureMin)}</span>
           <span><small>Rain</small>${item.precipitationSum === null ? '--' : `${item.precipitationSum.toFixed(1)} mm`}</span>
-          <span><small>Chance</small>${item.precipitationProbabilityMax === null ? '--%' : `${Math.round(item.precipitationProbabilityMax)}%`}</span>
+            <span><small>Chance</small>${formatPercentage(item.precipitationProbabilityMax)}</span>
         </div>
       `,
     )
@@ -253,20 +288,25 @@ const renderResultState = (city: CityLocation, weather: ForecastData): void => {
 }
 
 const renderEmptyState = (message: string): void => {
+  weatherSymbol.className = 'weather-symbol'
   weatherSymbol.textContent = '–'
   temperaturePlaceholder.textContent = '--°'
   emptyTitle.textContent = 'No results'
   currentDay.textContent = '--'
-  emptyCopy.textContent = message
+  currentWeatherIcon.textContent = '–'
+  currentDescription.textContent = message
+  humidityValue.textContent = '--%'
+  apparentTemperatureValue.textContent = '--°'
+  windValue.textContent = '--'
   hourlyContent.className = 'empty-forecast'
   dailyContent.className = 'daily-empty'
   hourlyContent.innerHTML = `
     <span class="empty-line" aria-hidden="true"></span>
-    <p>${message}</p>
+    <p>${escapeHtml(message)}</p>
   `
   dailyContent.innerHTML = `
     <span class="calendar-mark" aria-hidden="true">▦</span>
-    <p>${message}</p>
+    <p>${escapeHtml(message)}</p>
   `
 }
 

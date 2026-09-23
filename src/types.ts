@@ -20,8 +20,6 @@ export type CurrentWeather = {
   apparentTemperature: number | null
   isDay: boolean | null
   windSpeed: number | null
-  windDirection: number | null
-  precipitation: number | null
   weatherCode: number | null
   description: string
 }

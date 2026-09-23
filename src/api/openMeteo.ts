@@ -92,8 +92,6 @@ const isValidWeatherPayload = (value: unknown): value is Record<string, unknown>
     (typeof current.apparent_temperature === 'number' || current.apparent_temperature === null) &&
     (typeof current.is_day === 'number' || current.is_day === null) &&
     (typeof current.wind_speed_10m === 'number' || current.wind_speed_10m === null) &&
-    (typeof current.wind_direction_10m === 'number' || current.wind_direction_10m === null) &&
-    (typeof current.precipitation === 'number' || current.precipitation === null) &&
     (typeof current.weather_code === 'number' || current.weather_code === null)
 
   const hasHourlyFields =
@@ -165,7 +163,7 @@ export async function getWeatherForecast(
     )
     url.searchParams.set(
       'current',
-      'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,wind_direction_10m,wind_speed_10m,precipitation,weather_code',
+      'temperature_2m,relative_humidity_2m,apparent_temperature,is_day,wind_speed_10m,weather_code',
     )
     url.searchParams.set(
       'daily',
@@ -195,8 +193,6 @@ export async function getWeatherForecast(
       apparentTemperature: typeof currentRecord.apparent_temperature === 'number' ? currentRecord.apparent_temperature : null,
       isDay: typeof currentRecord.is_day === 'number' ? currentRecord.is_day === 1 : null,
       windSpeed: typeof currentRecord.wind_speed_10m === 'number' ? currentRecord.wind_speed_10m : null,
-      windDirection: typeof currentRecord.wind_direction_10m === 'number' ? currentRecord.wind_direction_10m : null,
-      precipitation: typeof currentRecord.precipitation === 'number' ? currentRecord.precipitation : null,
       weatherCode: typeof currentRecord.weather_code === 'number' ? currentRecord.weather_code : null,
       description: describeWeatherCode(typeof currentRecord.weather_code === 'number' ? currentRecord.weather_code : null),
     }
