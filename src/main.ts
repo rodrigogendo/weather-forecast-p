@@ -11,7 +11,7 @@ if (!appRoot) {
 appRoot.innerHTML = `
 <main class="app-shell">
   <header class="topbar">
-    <a class="brand" href="/" aria-label="Skyline weather home">
+    <a class="brand" href="${import.meta.env.BASE_URL}" aria-label="Skyline weather home">
       <span class="brand-mark" aria-hidden="true">+</span>
       <span>Skyline</span>
     </a>
