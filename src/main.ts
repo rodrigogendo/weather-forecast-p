@@ -243,6 +243,9 @@ const renderResultState = (city: CityLocation, weather: ForecastData): void => {
   const current = weather.current
   const cityName = city.name
   const dayState = current.isDay === null ? 'Unknown light' : current.isDay ? 'Day' : 'Night'
+  const currentHour = current.time.slice(0, 13)
+  const currentHourIndex = weather.hourly.findIndex((item) => item.time.slice(0, 13) === currentHour)
+  const hourlyStartIndex = currentHourIndex >= 0 ? currentHourIndex : 0
 
   weatherSymbol.className = 'weather-symbol'
   weatherSymbol.textContent = current.isDay === null ? '？' : current.isDay ? '☀' : '☾'
@@ -257,7 +260,7 @@ const renderResultState = (city: CityLocation, weather: ForecastData): void => {
   hourlyContent.className = 'hourly-content'
   dailyContent.className = 'daily-content'
   hourlyContent.innerHTML = weather.hourly
-    .slice(0, 24)
+    .slice(hourlyStartIndex, hourlyStartIndex + 24)
     .map(
       (item) => `
         <div class="hourly-item">
