@@ -19,8 +19,7 @@ appRoot.innerHTML = `
   </header>
 
   <section class="search-area" aria-labelledby="search-heading">
-    <p class="eyebrow">Weather at a glance</p>
-    <h1 id="search-heading">Find your forecast</h1>
+    <h1 id="search-heading">Weather Finder</h1>
     <form class="search-form">
       <label class="sr-only" for="city-search">Search for a city</label>
       <span class="search-icon" aria-hidden="true">⌕</span>
@@ -172,6 +171,7 @@ const getWeatherIcon = (code: number | null): string => {
 }
 
 const renderIdleState = (): void => {
+  weatherSymbol.className = 'weather-symbol'
   weatherSymbol.textContent = '☼'
   temperaturePlaceholder.textContent = '--°'
   emptyTitle.textContent = 'No location selected'
@@ -189,11 +189,11 @@ const renderIdleState = (): void => {
   `
 }
 
-const renderLoadingState = (cityLabel: string): void => {
-  weatherSymbol.className = 'weather-symbol'
-  weatherSymbol.textContent = '⏳'
+const renderLoadingState = (): void => {
+  weatherSymbol.className = 'weather-symbol weather-spinner'
+  weatherSymbol.textContent = ''
   temperaturePlaceholder.textContent = '--°'
-  emptyTitle.textContent = cityLabel
+  emptyTitle.textContent = 'Loading forecast'
   currentDay.textContent = '--'
   emptyCopy.textContent = 'Checking city data and weather forecast…'
   hourlyContent.className = 'empty-forecast'
@@ -213,6 +213,7 @@ const renderResultState = (city: CityLocation, weather: ForecastData): void => {
   const cityName = city.name
   const dayState = current.isDay === null ? 'Unknown light' : current.isDay ? 'Day' : 'Night'
 
+  weatherSymbol.className = 'weather-symbol'
   weatherSymbol.textContent = current.isDay ? '☀' : '☾'
   temperaturePlaceholder.textContent = formatTemperature(current.temperature)
   emptyTitle.textContent = `${cityName}, ${city.country_code}`
@@ -271,7 +272,7 @@ const renderEmptyState = (message: string): void => {
 
 const renderState = (): void => {
   if (appState.status === 'loading') {
-    renderLoadingState(searchInput.value.trim() || 'Searching')
+    renderLoadingState()
     return
   }
 

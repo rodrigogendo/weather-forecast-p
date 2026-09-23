@@ -37,16 +37,16 @@
   button, input { font: inherit; }
   button { cursor: pointer; }
 
-  .app-shell { width: min(1180px, calc(100% - 48px)); margin: 0 auto; padding: 28px 0 48px; }
-  .topbar { display: flex; align-items: center; justify-content: space-between; padding-bottom: 32px; border-bottom: 1px solid var(--line); }
+  .app-shell { width: min(1180px, calc(100% - 48px)); margin: 0 auto; padding: 9px 0 9px; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--line); }
   .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); font-size: 18px; font-weight: 700; letter-spacing: .04em; text-decoration: none; }
   .brand-mark { display: grid; width: 24px; height: 24px; place-items: center; border: 1px solid var(--ink); border-radius: 50%; color: var(--accent); font-size: 20px; line-height: 1; }
   .status-label, .panel-note { color: var(--muted); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
-  .search-area { display: flex; flex-direction: column; align-items: center; padding: 72px 20px 64px; text-align: center; }
+  .search-area { display: flex; flex-direction: column; align-items: center; padding: 0px 20px 9px; text-align: center; }
   .eyebrow, .section-label { color: var(--accent); font-size: 11px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
   .eyebrow { margin: 0 0 14px; }
   h1, h2, p { margin-top: 0; }
-  h1 { margin-bottom: 28px; font-family: Georgia, serif; font-size: clamp(36px, 5vw, 60px); font-weight: 400; letter-spacing: -.04em; line-height: 1; }
+  h1 { margin-bottom: 28px; color: var(--accent); font-family: Georgia, serif; font-size: clamp(32px, 4.5vw, 52px); font-weight: 400; letter-spacing: -.04em; line-height: 1; }
   h2 { margin: 6px 0 0; font-family: Georgia, serif; font-size: 26px; font-weight: 400; letter-spacing: -.03em; }
   .search-form { display: flex; align-items: center; width: min(100%, 540px); min-height: 58px; padding: 6px 7px 6px 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); box-shadow: 0 12px 30px rgba(45, 53, 52, .06); }
   .search-icon { color: var(--muted); font-size: 27px; line-height: 1; transform: rotate(-20deg); }
@@ -62,6 +62,7 @@
   .location-dot { width: 8px; height: 8px; margin-top: 4px; border-radius: 50%; background: var(--accent); }
   .summary-empty { display: flex; flex: 1; flex-direction: column; align-items: center; justify-content: center; gap: 8px; text-align: center; }
   .weather-symbol { color: var(--accent); font-size: 64px; line-height: 1; }
+  .weather-spinner { display: inline-block; width: 42px; height: 42px; border: 3px solid rgba(210, 138, 82, .25); border-top-color: var(--accent); border-radius: 50%; animation: weather-spin .9s linear infinite; }
   .temperature-placeholder { margin: 18px 0 8px; font-family: Georgia, serif; font-size: 58px; letter-spacing: -.06em; }
   .empty-title { margin-bottom: 5px; font-size: 16px; font-weight: 700; }
   .current-day { margin: 0 0 5px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
@@ -101,4 +102,8 @@
     .daily-content { overflow-x: auto; }
     .daily-item { min-width: 555px; grid-template-columns: 58px minmax(90px, 1fr) repeat(4, minmax(52px, .7fr)); gap: 9px; font-size: 12px; }
   }
+}
+
+@keyframes weather-spin {
+  to { transform: rotate(360deg); }
 }
