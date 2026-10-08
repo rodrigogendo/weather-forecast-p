@@ -282,8 +282,7 @@ const renderResultState = (city: CityLocation, weather: ForecastData): void => {
             <span class="daily-condition"><span class="forecast-icon" aria-hidden="true">${getWeatherIcon(item.weatherCode)}</span>${escapeHtml(item.description)}</span>
           <span><small>High</small>${formatTemperature(item.temperatureMax)}</span>
           <span><small>Low</small>${formatTemperature(item.temperatureMin)}</span>
-          <span><small>Rain</small>${item.precipitationSum === null ? '--' : `${item.precipitationSum.toFixed(1)} mm`}</span>
-            <span><small>Chance</small>${formatPercentage(item.precipitationProbabilityMax)}</span>
+          <span><small>Chance</small>${formatPercentage(item.precipitationProbabilityMax)}</span>
         </div>
       `,
     )
