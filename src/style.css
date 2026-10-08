@@ -69,8 +69,8 @@
   .forecast-temperature { margin-top: auto; font-family: Georgia, serif; font-size: 25px; font-weight: 400; }
   .forecast-precipitation { color: var(--accent); }
   .daily-content { padding-top: 14px; }
-  .daily-item { display: grid; grid-template-columns: minmax(30px, .65fr) minmax(45px, 1.3fr) repeat(3, minmax(30px, .75fr)); gap: 6px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); font-size: 13px; }
-  .daily-item small { display: block; margin-bottom: 4px; color: var(--muted); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; }
+  .daily-item { display: grid; grid-template-columns: minmax(28px, .5fr) minmax(42px, 1fr) minmax(28px, .6fr) minmax(28px, .6fr) minmax(64px, 1.3fr); gap: 4px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line); font-size: 13px; }
+  .daily-item small { display: block; margin-bottom: 4px; color: var(--muted); font-size: 9px; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
   .daily-day { min-width: 0; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; }
   .daily-condition { display: flex; align-items: center; gap: 6px; color: var(--muted); }
   .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
